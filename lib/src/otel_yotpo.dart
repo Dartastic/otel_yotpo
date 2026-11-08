@@ -1,15 +1,16 @@
-// Licensed under the Dartastic Pro Software License Agreement.
+// Licensed under the Apache License, Version 2.0
 // Copyright 2025-2026 Mindful Software LLC d/b/a Dartastic.io, All rights reserved.
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 
 import 'otel_yotpo_suppression.dart';
 
 const _tracerName = 'dartastic_otel_libs_yotpo';
 
-Tracer _tracer() => OTel.tracerProvider().getTracer(_tracerName);
+APITracer _tracer() => OTelAPI.tracerProvider().getTracer(_tracerName);
 
 class YotpoResult {
+  /// Creates a result.
   const YotpoResult({
     this.appKey,
     this.productLine,
@@ -88,8 +89,13 @@ class YotpoResult {
   final int? statusCode;
 }
 
+/// What a traced call returned: the value for the caller plus fields
+/// recorded on the span.
 class YotpoCallResult<T> {
+  /// Creates a call result.
   const YotpoCallResult({required this.value, this.result});
+
+  /// The value returned to the caller.
   final T value;
   final YotpoResult? result;
 }
@@ -117,116 +123,116 @@ Future<T> tracedYotpo<T>({
   final span = _tracer().startSpan(
     'yotpo $operation',
     kind: SpanKind.client,
-    attributes: OTel.attributesFromMap(m),
+    attributes: OTelAPI.attributesFromMap(m),
   );
   try {
     final r = await invoke();
     if (r.result != null) {
       final extras = <Attribute<Object>>[];
       if (r.result!.appKey != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.app.key',
           r.result!.appKey!,
         ));
       }
       if (r.result!.productLine != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.product_line',
           r.result!.productLine!,
         ));
       }
       if (r.result!.productId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.product.id',
           r.result!.productId!,
         ));
       }
       if (r.result!.reviewId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.review.id',
           r.result!.reviewId!,
         ));
       }
       if (r.result!.reviewScore != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'yotpo.review.score',
           r.result!.reviewScore!,
         ));
       }
       if (r.result!.reviewVerifiedBuyer != null) {
-        extras.add(OTel.attributeBool(
+        extras.add(OTelAPI.attributeBool(
           'yotpo.review.verified_buyer',
           r.result!.reviewVerifiedBuyer!,
         ));
       }
       if (r.result!.reviewSentiment != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.review.sentiment',
           r.result!.reviewSentiment!,
         ));
       }
       if (r.result!.questionId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.question.id',
           r.result!.questionId!,
         ));
       }
       if (r.result!.questionAnswered != null) {
-        extras.add(OTel.attributeBool(
+        extras.add(OTelAPI.attributeBool(
           'yotpo.question.answered',
           r.result!.questionAnswered!,
         ));
       }
       if (r.result!.imageId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.image.id',
           r.result!.imageId!,
         ));
       }
       if (r.result!.imageStatus != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.image.status',
           r.result!.imageStatus!,
         ));
       }
       if (r.result!.customerId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.customer.id',
           r.result!.customerId!,
         ));
       }
       if (r.result!.loyaltyAction != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.loyalty.action',
           r.result!.loyaltyAction!,
         ));
       }
       if (r.result!.loyaltyPointsDelta != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'yotpo.loyalty.points_delta',
           r.result!.loyaltyPointsDelta!,
         ));
       }
       if (r.result!.loyaltyTier != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.loyalty.tier',
           r.result!.loyaltyTier!,
         ));
       }
       if (r.result!.referralCode != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.referral.code',
           r.result!.referralCode!,
         ));
       }
       if (r.result!.smsCampaignId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.sms.campaign_id',
           r.result!.smsCampaignId!,
         ));
       }
       if (r.result!.smsDeliveryStatus != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'yotpo.sms.delivery_status',
           r.result!.smsDeliveryStatus!,
         ));
@@ -239,7 +245,7 @@ Future<T> tracedYotpo<T>({
         }
       }
       if (r.result!.statusCode != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'http.response.status_code',
           r.result!.statusCode!,
         ));
@@ -250,13 +256,13 @@ Future<T> tracedYotpo<T>({
           );
         }
       }
-      if (extras.isNotEmpty) span.addAttributes(OTel.attributes(extras));
+      if (extras.isNotEmpty) span.addAttributes(OTelAPI.attributes(extras));
     }
     return r.value;
   } catch (e, st) {
-    span.addAttributes(OTel.attributes([
-      OTel.attributeString(
-        ErrorResource.errorType.key,
+    span.addAttributes(OTelAPI.attributes([
+      OTelAPI.attributeString(
+        ErrorAttributes.errorType.key,
         e.runtimeType.toString(),
       ),
     ]));
